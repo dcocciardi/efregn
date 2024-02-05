@@ -1,0 +1,185 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    <style>
+
+        .user_card {
+            width: 700px;
+            margin-top: 5px;
+            margin-bottom: auto;
+            background: #7c9425;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .form_container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form_inputs {
+            width: 70%;
+        }
+
+        .form_preview {
+            width: 25%;
+        }
+
+        #form-title {
+            color: #FFFFF0;
+        }
+
+        .login_btn {
+            width: 100%;
+            background: #7c9425;
+            color: #FFFFF0;
+        }
+
+        .login_btn:focus {
+            box-shadow: none;
+            outline: 0px;
+        }
+
+        .input-group-text {
+            background: #c59257;
+            color: #FFFFF0;
+            border: 0;
+            border-radius: 0.25rem 0 0 0.25rem;
+        }
+
+        .input_user,
+        .input_pass:focus {
+            box-shadow: none;
+            outline: 0px;
+        }
+
+        /* Aggiungi stile per l'anteprima dell'immagine */
+        #preview-container {
+            max-width: 100%;
+            height: auto;
+            overflow: hidden;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: none; /* Nascondi l'anteprima inizialmente */
+        }
+    </style>
+
+</head>
+
+<div style="text-align: center; padding: 20px; ">
+    <div>
+        <h2>Qualcosa di buono sta per unirsi alla grande tavola di "efregn"!</h2>
+        <h4>Puoi aggiungere un nuovo piatto tramite questa pagina. Se non desideri farlo, <a href="{% url 'home' %}" style="color: #FFFFF0; font-weight: bold;"> ritorna alla homepage</a>.</h4>
+    </div>
+</div>
+
+<div class="container h-100 mb-5">
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center text-center">
+                <h4 id="form-title">Nuovo piatto:</h4>
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                <div class="form_inputs">
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-utensils"></i></span>
+                            </div>
+                            {{ form.nome }}
+                        </div>
+                    
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-list"></i></span>
+                            </div>
+                            {{ form.ingredienti }}
+                        </div>
+                    
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-list"></i></span>
+                            </div>
+                            {{ form.categoria }}
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                            </div>
+                            {{ form.prezzo }}
+                        </div>
+                    
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-image"></i></span>
+                            </div>
+                            {{ form.immagine }}
+                        </div>
+                    
+                        <br>
+                        <div class="form-group d-flex justify-content-center">
+                            <input class="registratibutton" type="submit" value="Aggiungi piatto">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form_preview">
+                    <div id="preview-container">
+                        <img id="preview-image" src="" alt="Anteprima immagine">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center h-100" style="margin-top: 20px;">
+        <div class="alert alert-primary" role="alert" style="background-color: #FFFFF0; color: #7c9425; text-align: center;">
+            ATTENZIONE: È necessario tenere premuto CTRL o CMD per selezionare più categorie.
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Quando viene selezionata un'immagine
+        $('#id_immagine').change(function () {
+            var input = this;
+            var previewImage = $('#preview-image')[0];
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Imposta l'anteprima dell'immagine
+                    previewImage.style.display = 'block';
+                    previewImage.src = e.target.result;
+                };
+
+                // Leggi il file come URL dati
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    });
+</script>
+
+<div style="position: relative;">
+    {% endblock %}
+</div>

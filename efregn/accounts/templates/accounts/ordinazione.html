@@ -1,0 +1,124 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <title>Ordinazione</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    <style>
+
+        body {
+            background-image: url("{% static 'images/chef-ordinazione.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .user_card {
+            width: 900px;
+            margin-top: 50px;
+            margin-bottom: auto;
+            background: #7c9425;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .registratibutton {
+            background-color: #c59257;
+            color: #FFFFF0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .piatti_list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .piatto_item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .piatto_icon {
+            font-size: 1.5em;
+            margin-right: 0px;
+        }
+
+        .piatto_nome {
+            background-color: #FFFFF0;
+            color: #000;
+            padding: 5px;
+            margin-right: 0px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container h-100">
+        <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+                <div class="d-flex justify-content-center">
+                    <h3 id="form-title">La tua ordinazione di oggi, {{ request.user.username }}:</h3>
+                </div>
+                <div class="d-flex justify-content-center form_container">
+                    {% if ordine_inviato %}
+                    <div class="alert alert-primary" role="alert" style="background-color: #FFFFF0; color: #7c9425; text-align: center;"> ORDINAZIONE INVIATA. Il tuo saldo punti sarà aggiornato.
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-center form_container">
+                    <ul class="piatti_list">
+                        {% for ordinazione in ordinazioni %}
+                            <li class="piatto_item">
+                                <div class="input-group mb-2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text piatto_icon"><i class="fas fa-utensils"></i></span>
+                                    </div>
+                                    <div class="piatto_nome"> <b> {{ ordinazione.piatto.nome }} </b> - Quantità: {{ ordinazione.quantita }} -  Prezzo: {{ ordinazione.piatto.prezzo|floatformat:2 }} € </div>
+                                    <form method="POST" action="{% url 'rimuovi_piatto' ordinazione.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm" style="height: 100%; border-radius: 0"><i class="fas fa-trash"></i> <b> RIMUOVI </b> </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                        <h5 style="color: #FFFFF0;"> <i class="fas fa-cash-register"></i> Totale dell'ordinazione: {{ totale_ordine|floatformat:2 }} €
+                        <br>
+                        <i class="fas fa-piggy-bank"></i> Sconti applicati: {{ sconto|floatformat:2 }} €
+                        <br>
+                        <i class="fas fa-gift"></i> Punti guadagnati: {{ punti_ottenuti }}</h5>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <form method="POST" action="{% url 'invia_ordinazione' %}">
+                        {% csrf_token %}
+                        <input type="submit" class="registratibutton" value="INVIA ORDINAZIONE IN CUCINA">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="form-group d-flex justify-content-center">
+        <a href="/" class="loginbutton"> RIPORTAMI ALLA HOMEPAGE </a>
+    </div>
+
+</body>
+{% endblock %}

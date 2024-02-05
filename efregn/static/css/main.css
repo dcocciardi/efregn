@@ -1,0 +1,160 @@
+#logo{
+
+}
+
+/* Stili per il corpo della pagina */
+body{
+        background-color: #C59257;
+        
+    }
+
+/* Stili per i titoli heading 2 */
+h2{
+        color: #FFFFF0;
+    }
+
+/* Stili per i titoli heading 3 */
+h3{
+    color: #FFFFF0;
+}
+
+/* Stili per i titoli heading 4 */
+h4{
+    color: #FFFFF0;
+}
+
+
+.footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: left;
+        background-color: #7c9425; /* Colore di sfondo opzionale */
+        color: white; /* Colore del testo opzionale */
+        padding: 10px; /* Padding opzionale per spaziatura */
+    }
+
+
+/* Stili per il pulsante del login */
+.loginbutton {
+    display: inline-block;
+    background-color: #7c9425;
+    color: #FFFFF0;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    border-radius: 7px;
+    transition: background-color 0.3s, color 0.3s; /* Transizione per effetto hover */
+}
+
+
+/* Stile per il login in hover */
+.loginbutton:hover {
+    background-color: #FFFFF0;
+    color: #7c9425; /* Testo verde */
+    text-decoration: none;
+}
+
+
+/* Stili per il pulsante "Registrati" del form */
+.registratibutton {
+    display: inline-block;
+    background-color: #C59257;
+    color: #FFFFF0;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s, color 0.3s; /* Transizione per effetto hover */
+}
+
+
+/* Stile per il "Registrati" in hover */
+.registratibutton:hover {
+    background-color: #FFFFF0;
+    color: #C59257; /* Testo verde */
+    text-decoration: none;
+}
+
+
+/* Stili per il pulsante del menù */
+.orderpiattobutton {
+    display: inline-block;
+    background-color: #7c9425;
+    color: #FFFFF0;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    border-radius: 7px;
+    transition: background-color 0.3s, color 0.3s; /* Transizione per effetto hover */
+}
+
+.orderpiattobutton:hover {
+        background-color: #C59257;
+        color: #FFFFF0;
+        text-decoration: none;
+    }
+
+
+/* Stili per il tasto "Cerca" nella navbar */
+.btn.btn-outline-success.my-2.my-sm-0 {
+    background-color: #C59257; /* Cambia il colore di sfondo */
+    color: #FFFFF0; /* Cambia il colore del testo */
+    border: none; /* Rimuovi il bordo */
+}
+
+.btn.btn-outline-success.my-2.my-sm-0:hover {
+    background-color: #FFFFF0; /* Cambia il colore di sfondo */
+    color: #C59257; /* Cambia il colore del testo */
+    text-decoration: none;
+}
+
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+}
+.quantity-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.quantity-input {
+    width: 40px;
+    text-align: center;
+}
+
+.user_card {
+    width: 500px;
+    margin-top: 50px;
+    margin-bottom: auto;
+    background: #7c9425;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.form_container {
+    margin-top: 20px;
+}
+
+#form-title{
+    color: #FFFFF0;
+}
+
+.input-group-text {
+    background: #c59257;
+    color: #FFFFF0;
+    border: 0;
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+.input_user,
+.input_pass:focus {
+    box-shadow: none;
+    outline: 0px;
+}

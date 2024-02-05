@@ -1,0 +1,219 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url("{% static 'images/tavola-gente.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+</style>
+
+<div style="text-align: center; padding: 20px; ">
+        <h2>I tuoi momenti speciali meritano sapori autentici.</h2>
+        <br>
+        <div class="container">
+            <div style="text-align: left;">
+                <form method="get" id="ordinamento-filtraggio-piatti">
+                    <label for="ordine" style="color: #FFFFF0; font-size: 1.2em;"> Ordina per: </label>
+                    <select id="ordine" name="ordine" style="border-radius: 5px; border: none;">
+                        <option value="prezzo_asc">Prezzo crescente</option>
+                        <option value="prezzo_desc">Prezzo decrescente</option>
+                        <option value="nome">Nome</option>
+                    </select>
+                
+                    <label for="categoria" style="color: #FFFFF0; font-size: 1.2em;"> Filtra per: </label>
+                    <select id="categoria" name="categoria" style="border-radius: 5px; border: none;">
+                        <option value="tutti">Tutti</option>
+                        <option value="vegetariano">Vegetariano</option>
+                        <option value="vegano">Vegano</option>
+                        <option value="piccante">Piccante</option>
+                        <option value="classico">Classico</option>
+                    </select>
+                
+                    <input type="submit" value="Conferma" style="border-radius: 5px; background: #7c9425; color: #FFFFF0; border: none;">
+                </form>
+                
+            
+        </div>
+            <div class="row">
+                {% for piatto in piatti %}
+                    <div class="col-md-4">
+                        <div class="card rounded" style="margin: 10px; padding: 10px;">
+                            {% if piatto.immagine %} 
+                                <img src="{{ piatto.immagine.url }}" class="card-img-top">
+                            {% else %}
+                                <img src="{% static 'images/no-immagine.jpg' %}" class="card-img-top">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ piatto.nome }} <b style="color: #c59257;">{{ piatto.prezzo|floatformat:2 }} €</b> </h5>
+                                <p class="card-text">
+                                    Ingredienti: {{ piatto.ingredienti }}
+                                </p>
+                                <p class="card-text">
+                                    Categorie:
+                                    <b>
+                                        {% for categoria in piatto.categoria.all %}
+                                            {{ categoria.nome }}
+                                            {% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </b>
+                                </p>
+
+                                <!-- Fa in modo che l'utente non autenticato non veda "Aggiungi" -->
+                                {% if user.is_authenticated %}
+                                <p style="text-align: center">
+                                    <form method="POST" action="{% url 'aggiungi_al_carrello' piatto.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="piatto_id" value="{{ piatto.id }}">
+                                        <button type="submit" class="orderpiattobutton">Aggiungi all'ordinazione</button>
+                                    </form>
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <br>
+
+            {% if user.is_authenticated %}
+            <div class="row">
+
+                {% if raccomandazioni %}
+                    <h3> {{ request.user.username }}, se ti piace la categoria "{{categoria_piu_amata}}", adorerai questi piatti: </h3>
+                    <br>
+                    <p> <h5 style="color: #FFFFF0;"> Raccomandazioni basate sui piatti consumati più frequentemente nelle tue ordinazioni recenti.</h5> </p>
+                    <div class="row">
+                        {% for piatto in raccomandazioni %}
+                            <div class="col-md-4">
+                                <div class="card rounded" style="margin: 10px; padding: 10px; background-color: #7c9425;">
+                                    {% if piatto.immagine %} 
+                                        <img src="{{ piatto.immagine.url }}" class="card-img-top">
+                                    {% else %}
+                                        <img src="{% static 'images/no-immagine.jpg' %}" class="card-img-top">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 style="color: #FFFFF0;" class="card-title">{{ piatto.nome }} <b>{{ piatto.prezzo|floatformat:2 }} €</b> </h5>
+                                        <p style="text-align: center">
+                                            <form method="POST" action="{% url 'aggiungi_al_carrello' piatto.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="piatto_id" value="{{ piatto.id }}">
+                                                <button type="submit" class="orderpiattobutton" style="background-color: #FFFFF0; color: #7c9425;">Aggiungi all'ordinazione</button>
+                                            </form>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+            {% endif %}
+        </div>
+    
+    <br>
+    <br>
+
+    <!-- Fa in modo che l'utente autenticato veda "Logout" -->
+    {% if user.is_authenticated %}
+        <div>
+            <a href="/logout/" class="loginbutton">LOGOUT </a>
+        </div>
+    {% endif %}
+    
+
+
+    <!-- Fa in modo che l'utente autenticato non veda "Entra nel club" -->
+    {% if not user.is_authenticated %}
+        <div>
+            <h3> Sai che ti stai perdendo un mare di offerte esclusive? </h3>
+            <h4> Entra oggi stesso nel club riservato: è gratis, e il piacere è tutto tuo. </h4>
+            <a href="/registrati/" class="loginbutton">REGISTRATI </a>
+            <a href="/login/" class="loginbutton">LOGIN </a>
+        </div>
+    {% endif %}
+
+
+</div>
+
+<br>
+<br>
+
+<div style="position: relative;">
+    {% endblock %}
+</div>
+
+
+<!-- Script in js per filtrare i piatti in base alla categoria -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoriaSelect = document.getElementById("categoria");
+        const formFiltraggio = document.getElementById("filtraggio-piatti");
+
+        categoriaSelect.addEventListener("change", function () {
+            formFiltraggio.submit();
+        });
+    });
+</script>
+
+
+
+<!-- Script in js per l'ordinamento dei piatti -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ordineSelect = document.getElementById("ordine");
+        const formOrdinamento = document.getElementById("ordinamento-piatti");
+
+        ordineSelect.addEventListener("change", function () {
+            formOrdinamento.submit();
+        });
+    });
+</script>
+
+<!-- Script in js per aggiungere piatti all'ordinazione con incremento di quantità -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".orderpiattobutton");
+
+        buttons.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const piattoId = this.getAttribute("data-piatto-id");
+                aggiungiAlCarrello(piattoId);
+            });
+        });
+
+        function aggiungiAlCarrello(piattoId) {
+            fetch(`/aggiungi_al_carrello/${piattoId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // Aggiorna la quantità visualizzata per il piatto
+                    const quantitaElement = document.getElementById(`quantita-${piattoId}`);
+                    if (quantitaElement) {
+                        const nuovaQuantita = parseInt(quantitaElement.innerText) + 1;
+                        quantitaElement.innerText = nuovaQuantita;
+                    }
+                }
+            })
+            .catch(error => console.error('Errore:', error));
+        }
+
+        // Funzione per ottenere il token CSRF dai cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    });
+</script>

@@ -7,7 +7,7 @@
 Consente agli utenti di visualizzare i piatti presenti nel menù e, previa registrazione, di creare delle vere e proprie ordinazioni, accumulando anche punti e sconti. 
 Il personale può, inoltre, modificare il menù aggiungendo nuovi piatti.
 ## Requisiti
-- Python 3.10
+- Python 3.11
 - pipenv
 - git
 
